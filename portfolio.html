@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - TCHINGUILOU Jonathan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-morphism {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .tech-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+        
+        .tech-card:hover {
+            transform: rotateY(10deg) rotateX(10deg);
+        }
+        
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .code-animation {
+            font-family: 'Courier New', monospace;
+            border-right: 2px solid #10b981;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { border-color: #10b981; }
+            51%, 100% { border-color: transparent; }
+        }
+        
+        .project-card {
+            perspective: 1000px;
+        }
+        
+        .project-inner {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+        }
+        
+        .project-card:hover .project-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .project-front, .project-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+        }
+        
+        .project-back {
+            transform: rotateY(180deg);
+        }
+        
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 8s infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-100px) rotate(180deg);
+                opacity: 0.5;
+            }
+        }
+
+        /* Menu mobile */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            height: 100vh;
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(10px);
+            transition: right 0.3s ease-in-out;
+            z-index: 1000;
+            padding: 2rem;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 1rem 0;
+            font-size: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-menu a:last-child {
+            border-bottom: none;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+            z-index: 999;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="sticky top-0 w-full z-50 glass-morphism">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400" id="portfolioLogo">
+                    Dev.Jo
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="hover:text-purple-400 transition-colors">Accueil</a>
+                    <a href="#about" class="hover:text-purple-400 transition-colors">À propos</a>
+                    <a href="#skills" class="hover:text-purple-400 transition-colors">Compétences</a>
+                    <a href="#projects" class="hover:text-purple-400 transition-colors">Projets</a>
+                    <a href="#contact" class="hover:text-purple-400 transition-colors">Contact</a>
+                    <a href="index.html" class="bg-purple-600 px-4 py-2 rounded hover:bg-purple-700">
+                        <i class="fas fa-edit mr-2"></i>Modifier
+                    </a>
+                </div>
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-white">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu Mobile -->
+    <div class="mobile-menu">
+        <div class="flex justify-between items-center mb-8">
+            <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                Dev.Jo
+            </div>
+            <button id="close-menu" class="text-white">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <a href="#home" class="hover:text-purple-400 transition-colors">Accueil</a>
+        <a href="#about" class="hover:text-purple-400 transition-colors">À propos</a>
+        <a href="#skills" class="hover:text-purple-400 transition-colors">Compétences</a>
+        <a href="#projects" class="hover:text-purple-400 transition-colors">Projets</a>
+        <a href="#contact" class="hover:text-purple-400 transition-colors">Contact</a>
+        <a href="index.html" class="bg-purple-600 px-4 py-2 rounded hover:bg-purple-700 mt-4 inline-block">
+            <i class="fas fa-edit mr-2"></i>Modifier
+        </a>
+    </div>
+    <div class="overlay"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative gradient-bg">
+        <div class="particles"></div>
+        <div class="container mx-auto px-6 text-center">
+            <div class="hero-content">
+                <h1 class="text-4xl md:text-8xl font-bold mb-6 opacity-0" id="portfolioTitle">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">
+                        Développeur
+                    </span>
+                    <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                        Fullstack
+                    </span>
+                </h1>
+                <div class="text-xl md:text-2xl mb-8 opacity-0 code-container">
+                    <span class="code-animation" id="typing-text"></span>
+                </div>
+                <div class="flex justify-center space-x-6 mb-12 opacity-0 social-links">
+                    <a href="https://github.com/Joman-12" class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all hover:scale-110">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/jonathan-tchinguilou-3a52342a7?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all hover:scale-110">
+                        <i class="fab fa-linkedin text-xl"></i>
+                    </a>
+                    <a href="mailto:tchinguiloumanzama@gmail.com" class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all hover:scale-110">
+                        <i class="fas fa-envelope text-xl"></i>
+                    </a>
+                </div>
+                <button class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 px-8 py-4 rounded-full text-lg font-semibold transition-all hover:scale-105 shadow-2xl opacity-0 cta-button">
+                    Découvrir mon travail
+                </button>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i class="fas fa-chevron-down text-2xl"></i>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl font-bold text-center mb-16 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                À propos de moi
+            </h2>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="about-text">
+                    <p class="text-lg mb-6 leading-relaxed">
+                        Développeur fullstack passionné avec <span class="text-purple-400 font-semibold">3 ans d'expérience</span>, 
+                        je transforme des idées complexes en solutions digitales élégantes et performantes.
+                    </p>
+                    <p class="text-lg mb-6 leading-relaxed">
+                        Ma philosophie : créer des applications qui ne se contentent pas de fonctionner, 
+                        mais qui offrent une expérience utilisateur exceptionnelle.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="px-4 py-2 bg-purple-500 bg-opacity-20 rounded-full text-purple-300">Innovation</span>
+                        <span class="px-4 py-2 bg-pink-500 bg-opacity-20 rounded-full text-pink-300">Créativité</span>
+                        <span class="px-4 py-2 bg-blue-500 bg-opacity-20 rounded-full text-blue-300">Performance</span>
+                    </div>
+                </div>
+                <div class="about-stats grid grid-cols-2 gap-6">
+                    <div class="stat-card text-center p-6 glass-morphism rounded-2xl">
+                        <div class="text-4xl font-bold text-purple-400 mb-2" data-count="4">0</div>
+                        <div class="text-gray-300">Projets Majeurs</div>
+                    </div>
+                    <div class="stat-card text-center p-6 glass-morphism rounded-2xl">
+                        <div class="text-4xl font-bold text-pink-400 mb-2" data-count="3">0</div>
+                        <div class="text-gray-300">Années d'Expérience</div>
+                    </div>
+                    <div class="stat-card text-center p-6 glass-morphism rounded-2xl">
+                        <div class="text-4xl font-bold text-blue-400 mb-2" data-count="8">0</div>
+                        <div class="text-gray-300">Technologies</div>
+                    </div>
+                    <div class="stat-card text-center p-6 glass-morphism rounded-2xl">
+                        <div class="text-4xl font-bold text-green-400 mb-2" data-count="100">0</div>
+                        <div class="text-gray-300">% Passion</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl font-bold text-center mb-16 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                Stack Technique
+            </h2>
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Frontend -->
+                <div class="tech-category">
+                    <h3 class="text-2xl font-bold mb-6 text-center text-blue-400">Frontend</h3>
+                    <div class="space-y-4">
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fab fa-html5 text-2xl text-orange-500"></i>
+                                <span class="font-semibold">HTML5</span>
+                            </div>
+                        </div>
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fab fa-css3-alt text-2xl text-blue-500"></i>
+                                <span class="font-semibold">CSS3</span>
+                            </div>
+                        </div>
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fab fa-js-square text-2xl text-yellow-500"></i>
+                                <span class="font-semibold">JavaScript</span>
+                            </div>
+                        </div>
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fab fa-angular text-2xl text-red-500"></i>
+                                <span class="font-semibold">Angular</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backend -->
+                <div class="tech-category">
+                    <h3 class="text-2xl font-bold mb-6 text-center text-green-400">Backend</h3>
+                    <div class="space-y-4">
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fab fa-php text-2xl text-purple-500"></i>
+                                <span class="font-semibold">PHP</span>
+                            </div>
+                        </div>
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fab fa-laravel text-2xl text-red-500"></i>
+                                <span class="font-semibold">Laravel</span>
+                            </div>
+                        </div>
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fab fa-node-js text-2xl text-green-500"></i>
+                                <span class="font-semibold">NestJS</span>
+                            </div>
+                        </div>
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fab fa-java text-2xl text-orange-600"></i>
+                                <span class="font-semibold">Spring Boot</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database & Tools -->
+                <div class="tech-category">
+                    <h3 class="text-2xl font-bold mb-6 text-center text-yellow-400">Base de Données</h3>
+                    <div class="space-y-4">
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-database text-2xl text-blue-500"></i>
+                                <span class="font-semibold">MySQL</span>
+                            </div>
+                        </div>
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-leaf text-2xl text-green-500"></i>
+                                <span class="font-semibold">MongoDB</span>
+                            </div>
+                        </div>
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-elephant text-2xl text-blue-600"></i>
+                                <span class="font-semibold">PostgreSQL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tools -->
+                <div class="tech-category">
+                    <h3 class="text-2xl font-bold mb-6 text-center text-purple-400">Outils</h3>
+                    <div class="space-y-4">
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fab fa-git-alt text-2xl text-orange-500"></i>
+                                <span class="font-semibold">Git</span>
+                            </div>
+                        </div>
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fab fa-docker text-2xl text-blue-500"></i>
+                                <span class="font-semibold">Docker</span>
+                            </div>
+                        </div>
+                        <div class="tech-card p-4 glass-morphism rounded-xl hover:shadow-2xl">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-cloud text-2xl text-gray-400"></i>
+                                <span class="font-semibold">AWS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl font-bold text-center mb-16 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                Projets Réalisés
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Project 1 -->
+                <div class="project-card h-80">
+                    <div class="project-inner h-full">
+                        <div class="project-front bg-gradient-to-br from-blue-500 to-purple-600 p-8 text-white h-full flex flex-col justify-between">
+                            <div>
+                                
+                                <h3 class="text-2xl font-bold mb-3">Gestion de Stock & Facturation</h3>
+                                <p class="text-blue-100">Application complète de gestion commerciale</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <span class="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm">Laravel</span>
+                                <span class="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm">MySQL</span>
+                            </div>
+                        </div>
+                        <div class="project-back bg-gradient-to-br from-purple-600 to-blue-500 p-8 text-white h-full flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-xl font-bold mb-4">Fonctionnalités</h4>
+                                <ul class="space-y-2 text-sm">
+                                    <li>• Gestion des stocks en temps réel</li>
+                                    <li>• Génération de factures PDF</li>
+                                    <li>• Tableau de bord analytique</li>
+                                    <li>• Gestion multi-utilisateurs</li>
+                                    <li>• Alertes de stock bas</li>
+                                </ul>
+                            </div>
+                            <button class="bg-white text-purple-600 px-4 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-all">
+                                Voir le projet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card h-80">
+                    <div class="project-inner h-full">
+                        <div class="project-front bg-gradient-to-br from-pink-500 to-rose-600 p-8 text-white h-full flex flex-col justify-between">
+                            <div>
+                                
+                                <h3 class="text-2xl font-bold mb-3">Marketplace E-commerce</h3>
+                                <p class="text-pink-100">Plateforme de vente vêtements & accessoires</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <span class="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm">Angular</span>
+                                <span class="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm">NestJS</span>
+                            </div>
+                        </div>
+                        <div class="project-back bg-gradient-to-br from-rose-600 to-pink-500 p-8 text-white h-full flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-xl font-bold mb-4">Technologies</h4>
+                                <ul class="space-y-2 text-sm">
+                                    <li>• Frontend Angular responsive</li>
+                                    <li>• API REST avec NestJS</li>
+                                    <li>• Paiement sécurisé intégré</li>
+                                    <li>• Gestion des commandes</li>
+                                    <li>• Interface admin avancée</li>
+                                </ul>
+                            </div>
+                            <button class="bg-white text-pink-600 px-4 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-all">
+                                Voir le projet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card h-80">
+                    <div class="project-inner h-full">
+                        <div class="project-front bg-gradient-to-br from-green-500 to-teal-600 p-8 text-white h-full flex flex-col justify-between">
+                            <div>
+                               
+                                <h3 class="text-2xl font-bold mb-3">Gestion Cantine</h3>
+                                <p class="text-green-100">Système automatisé avec Google Forms</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <span class="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm">PHP</span>
+                                <span class="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm">Excel</span>
+                            </div>
+                        </div>
+                        <div class="project-back bg-gradient-to-br from-teal-600 to-green-500 p-8 text-white h-full flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-xl font-bold mb-4">Innovation</h4>
+                                <ul class="space-y-2 text-sm">
+                                    <li>• Intégration Google Forms</li>
+                                    <li>• Export automatique Excel</li>
+                                    <li>• Gestion des menus</li>
+                                    <li>• Suivi des commandes</li>
+                                    <li>• Rapports automatisés</li>
+                                </ul>
+                            </div>
+                            <button class="bg-white text-green-600 px-4 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-all">
+                                Voir le projet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card h-80">
+                    <div class="project-inner h-full">
+                        <div class="project-front bg-gradient-to-br from-indigo-500 to-blue-600 p-8 text-white h-full flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-3">Pharmacie Hospitalière</h3>
+                                <p class="text-indigo-100">Gestion complète stock pharmaceutique</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <span class="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm">Spring Boot</span>
+                                <span class="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm">Java</span>
+                            </div>
+                        </div>
+                        <div class="project-back bg-gradient-to-br from-blue-600 to-indigo-500 p-8 text-white h-full flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-xl font-bold mb-4">Sécurité & Conformité</h4>
+                                <ul class="space-y-2 text-sm">
+                                    <li>• Traçabilité complète</li>
+                                    <li>• Gestion des péremptions</li>
+                                    <li>• Contrôle d'accès sécurisé</li>
+                                    <li>• Rapports réglementaires</li>
+                                    <li>• Interface intuitive</li>
+                                </ul>
+                            </div>
+                            <button class="bg-white text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-opacity-90 transition-all">
+                                Voir le projet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl font-bold text-center mb-16 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                Travaillons Ensemble
+            </h2>
+            <div class="max-w-4xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="contact-info space-y-8">
+                        <div class="glass-morphism p-6 rounded-2xl">
+                            <i class="fas fa-envelope text-3xl text-purple-400 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Email</h3>
+                            <p class="text-gray-300"> <a href="mailto:tchinguiloumanzama@gmail.com">tchinguiloumanzama@gmail.com</a></p>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-2xl">
+                            <i class="fas fa-phone text-3xl text-pink-400 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Téléphone</h3>
+                            <p class="text-gray-300"><a href="tel:+22870340735">+228 70340735</a></p>
+                        </div>
+                        <div class="glass-morphism p-6 rounded-2xl">
+                            <i class="fas fa-map-marker-alt text-3xl text-blue-400 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Localisation</h3>
+                            <p class="text-gray-300">Lomé, Togo</p>
+                        </div>
+                    </div>
+                    <form class="contact-form space-y-6">
+                        <div>
+                            <input type="text" placeholder="Votre nom" class="w-full p-4 bg-gray-800 rounded-xl border border-gray-700 focus:border-purple-400 focus:outline-none transition-colors">
+                        </div>
+                        <div>
+                            <input type="email" placeholder="Votre email" class="w-full p-4 bg-gray-800 rounded-xl border border-gray-700 focus:border-purple-400 focus:outline-none transition-colors">
+                        </div>
+                        <div>
+                            <textarea rows="6" placeholder="Votre message" class="w-full p-4 bg-gray-800 rounded-xl border border-gray-700 focus:border-purple-400 focus:outline-none transition-colors resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 py-4 rounded-xl font-semibold transition-all hover:scale-105 shadow-2xl">
+                            Envoyer le message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-gray-800 border-t border-gray-700">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">© 2025 Dev.Jo - Développeur Fullstack. Créé avec passion ❤️</p>
+        </div>
+    </footer>
+
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+        // Initialize particles
+        function createParticles() {
+            const particles = document.querySelector('.particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                particles.appendChild(particle);
+            }
+        }
+
+        // Typing animation
+        function typeWriter() {
+            const texts = [
+                "const passion = 'Innovation' + 'Créativité';",
+                "function buildAmazingApps() { return 'Magic'; }",
+                "if (idea === brilliant) { let's.collaborate(); }",
+                "// Transformons vos idées en réalité digitale"
+            ];
+            let textIndex = 0;
+            let charIndex = 0;
+            const typingElement = document.getElementById('typing-text');
+            
+            function type() {
+                if (charIndex < texts[textIndex].length) {
+                    typingElement.textContent += texts[textIndex].charAt(charIndex);
+                    charIndex++;
+                    setTimeout(type, 100);
+                } else {
+                    setTimeout(erase, 2000);
+                }
+            }
+            
+            function erase() {
+                if (charIndex > 0) {
+                    typingElement.textContent = texts[textIndex].substring(0, charIndex - 1);
+                    charIndex--;
+                    setTimeout(erase, 50);
+                } else {
+                    textIndex = (textIndex + 1) % texts.length;
+                    setTimeout(type, 500);
+                }
+            }
+            
+            type();
+        }
+
+        // Counter animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('[data-count]');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-count'));
+                const increment = target / 100;
+                let current = 0;
+                
+                const updateCounter = () => {
+                    if (current < target) {
+                        current += increment;
+                        counter.textContent = Math.ceil(current);
+                        setTimeout(updateCounter, 50);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+                updateCounter();
+            });
+        }
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const closeMenu = document.getElementById('close-menu');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const overlay = document.querySelector('.overlay');
+        
+        menuToggle?.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeMenu?.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        overlay?.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Fermer le menu mobile lors du clic sur un lien
+        document.querySelectorAll('.mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // GSAP Animations
+        gsap.set('.hero-content h1', { opacity: 0, y: 100 });
+        gsap.set('.code-container', { opacity: 0, y: 50 });
+        gsap.set('.social-links', { opacity: 0, y: 50 });
+        gsap.set('.cta-button', { opacity: 0, y: 50 });
+
+        // Hero animations
+        const heroTl = gsap.timeline();
+        heroTl
+            .to('.hero-content h1', { 
+                duration: 1.5, 
+                opacity: 1, 
+                y: 0, 
+                ease: "power3.out" 
+            })
+            .to('.code-container', { 
+                duration: 1, 
+                opacity: 1, 
+                y: 0, 
+                ease: "power2.out" 
+            }, "-=0.5")
+            .to('.social-links', { 
+                duration: 1, 
+                opacity: 1, 
+                y: 0, 
+                ease: "power2.out" 
+            }, "-=0.3")
+            .to('.cta-button', { 
+                duration: 1, 
+                opacity: 1, 
+                y: 0, 
+                ease: "power2.out" 
+            }, "-=0.3");
+
+        // Scroll triggered animations
+        gsap.fromTo('.about-text', 
+            { opacity: 0, x: -100 },
+            { 
+                opacity: 1, 
+                x: 0, 
+                duration: 1.5,
+                scrollTrigger: {
+                    trigger: '.about-text',
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    toggleActions: 'play none none reverse'
+                }
+            }
+        );
+
+        gsap.fromTo('.about-stats', 
+            { opacity: 0, x: 100 },
+            { 
+                opacity: 1, 
+                x: 0, 
+                duration: 1.5,
+                scrollTrigger: {
+                    trigger: '.about-stats',
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    toggleActions: 'play none none reverse',
+                    onEnter: animateCounters
+                }
+            }
+        );
+
+        // Tech cards animation
+        gsap.fromTo('.tech-category', 
+            { opacity: 0, y: 100 },
+            { 
+                opacity: 1, 
+                y: 0, 
+                duration: 1,
+                stagger: 0.2,
+                scrollTrigger: {
+                    trigger: '.tech-category',
+                    start: 'top 85%',
+                    end: 'bottom 15%',
+                    toggleActions: 'play none none reverse'
+                }
+            }
+        );
+
+        // Project cards animation
+        gsap.fromTo('.project-card', 
+            { opacity: 0, scale: 0.8 },
+            { 
+                opacity: 1, 
+                scale: 1, 
+                duration: 1,
+                stagger: 0.3,
+                scrollTrigger: {
+                    trigger: '.project-card',
+                    start: 'top 85%',
+                    end: 'bottom 15%',
+                    toggleActions: 'play none none reverse'
+                }
+            }
+        );
+
+        // Contact section animation
+        gsap.fromTo('.contact-info', 
+            { opacity: 0, x: -50 },
+            { 
+                opacity: 1, 
+                x: 0, 
+                duration: 1.2,
+                scrollTrigger: {
+                    trigger: '.contact-info',
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse'
+                }
+            }
+        );
+
+        gsap.fromTo('.contact-form', 
+            { opacity: 0, x: 50 },
+            { 
+                opacity: 1, 
+                x: 0, 
+                duration: 1.2,
+                scrollTrigger: {
+                    trigger: '.contact-form',
+                    start: 'top 80%',
+                    toggleActions: 'play none none reverse'
+                }
+            }
+        );
+
+        // Parallax effect for hero section
+        gsap.to('.hero-content', {
+            yPercent: -50,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '#home',
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true
+            }
+        });
+
+        // Tech cards hover effects
+        document.querySelectorAll('.tech-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, {
+                    duration: 0.3,
+                    scale: 1.05,
+                    rotationY: 10,
+                    rotationX: 5,
+                    ease: 'power2.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, {
+                    duration: 0.3,
+                    scale: 1,
+                    rotationY: 0,
+                    rotationX: 0,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Navigation active state
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('nav a[href^="#"]');
+
+        function setActiveNav() {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('text-purple-400');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('text-purple-400');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', setActiveNav);
+
+        // Form submission
+        document.querySelector('.contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Animation de soumission
+            const button = e.target.querySelector('button');
+            const originalText = button.textContent;
+            
+            button.textContent = 'Envoi en cours...';
+            button.disabled = true;
+            
+            // Simulation d'envoi
+            setTimeout(() => {
+                button.textContent = 'Message envoyé! ✓';
+                button.classList.add('bg-green-500');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.disabled = false;
+                    button.classList.remove('bg-green-500');
+                    e.target.reset();
+                }, 2000);
+            }, 1500);
+        });
+
+        // Floating animation for some elements
+        gsap.to('.floating', {
+            y: -20,
+            duration: 2,
+            ease: 'power1.inOut',
+            yoyo: true,
+            repeat: -1
+        });
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            typeWriter();
+            
+            // Add floating class to some elements
+            document.querySelectorAll('.tech-card:nth-child(2n)').forEach(card => {
+                card.classList.add('floating');
+            });
+        });
+
+        // Cursor trail effect
+        let mouseX = 0, mouseY = 0;
+        let trail = [];
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function createTrail() {
+            const trailElement = document.createElement('div');
+            trailElement.className = 'fixed pointer-events-none w-2 h-2 bg-purple-400 rounded-full opacity-70 z-50';
+            trailElement.style.left = mouseX + 'px';
+            trailElement.style.top = mouseY + 'px';
+            trailElement.style.transform = 'translate(-50%, -50%)';
+            document.body.appendChild(trailElement);
+            
+            gsap.to(trailElement, {
+                duration: 0.8,
+                scale: 0,
+                opacity: 0,
+                ease: 'power2.out',
+                onComplete: () => trailElement.remove()
+            });
+        }
+
+        // Create trail particles occasionally
+        setInterval(createTrail, 100);
+
+        // Add magnetic effect to buttons
+        document.querySelectorAll('button, .tech-card').forEach(element => {
+            element.addEventListener('mousemove', (e) => {
+                const rect = element.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                gsap.to(element, {
+                    duration: 0.3,
+                    x: x * 0.1,
+                    y: y * 0.1,
+                    ease: 'power2.out'
+                });
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                gsap.to(element, {
+                    duration: 0.3,
+                    x: 0,
+                    y: 0,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Background color transition on scroll
+        const sections_bg = [
+            { element: '#home', color: '#1f2937' },
+            { element: '#about', color: '#374151' },
+            { element: '#skills', color: '#1f2937' },
+            { element: '#projects', color: '#374151' },
+            { element: '#contact', color: '#1f2937' }
+        ];
+
+        sections_bg.forEach(section => {
+            ScrollTrigger.create({
+                trigger: section.element,
+                start: 'top center',
+                end: 'bottom center',
+                onEnter: () => gsap.to('body', { backgroundColor: section.color, duration: 0.5 }),
+                onEnterBack: () => gsap.to('body', { backgroundColor: section.color, duration: 0.5 })
+            });
+        });
+
+        // Gestion du stockage local
+        const storage = {
+            load: (key) => {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null;
+            }
+        };
+
+        // Charger les données au chargement de la page
+        window.addEventListener('load', () => {
+            // Charger le logo et le titre
+            const logo = localStorage.getItem('portfolioLogo');
+            const title = localStorage.getItem('portfolioTitle');
+            
+            if (logo) {
+                document.getElementById('portfolioLogo').textContent = logo;
+            }
+            
+            if (title) {
+                document.getElementById('portfolioTitle').innerHTML = `
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">
+                        ${title}
+                    </span>
+                `;
+            }
+
+            // Charger les réseaux sociaux
+            const socialLinks = storage.load('socialLinksForm');
+            if (socialLinks) {
+                const socialLinksContainer = document.querySelector('.social-links');
+                socialLinksContainer.innerHTML = `
+                    ${socialLinks.github ? `
+                        <a href="${socialLinks.github}" class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all hover:scale-110">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                    ` : ''}
+                    ${socialLinks.linkedin ? `
+                        <a href="${socialLinks.linkedin}" class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all hover:scale-110">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                    ` : ''}
+                    ${socialLinks.email ? `
+                        <a href="mailto:${socialLinks.email}" class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all hover:scale-110">
+                            <i class="fas fa-envelope text-xl"></i>
+                        </a>
+                    ` : ''}
+                `;
+            }
+
+            // Charger les informations à propos
+            const about = storage.load('aboutForm');
+            if (about) {
+                document.querySelector('.about-text p:first-child').innerHTML = about.description;
+                
+                // Mettre à jour les statistiques
+                const stats = document.querySelectorAll('.stat-card [data-count]');
+                stats[0].setAttribute('data-count', about.projects);
+                stats[1].setAttribute('data-count', about.experience);
+                stats[2].setAttribute('data-count', about.technologies);
+                
+                // Mettre à jour les qualités
+                const qualitiesContainer = document.querySelector('.flex.flex-wrap.gap-4');
+                qualitiesContainer.innerHTML = about.qualities.split(',').map(quality => `
+                    <span class="px-4 py-2 bg-purple-500 bg-opacity-20 rounded-full text-purple-300">${quality.trim()}</span>
+                `).join('');
+            }
+
+            // Charger les informations de contact
+            const contact = storage.load('contactForm');
+            if (contact) {
+                const contactInfo = document.querySelector('.contact-info');
+                contactInfo.innerHTML = `
+                    <div class="glass-morphism p-6 rounded-2xl">
+                        <i class="fas fa-envelope text-3xl text-purple-400 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Email</h3>
+                        <p class="text-gray-300">
+                            <a href="mailto:${contact.email}">${contact.email}</a>
+                        </p>
+                    </div>
+                    <div class="glass-morphism p-6 rounded-2xl">
+                        <i class="fas fa-phone text-3xl text-pink-400 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Téléphone</h3>
+                        <p class="text-gray-300">
+                            <a href="tel:${contact.phone}">${contact.phone}</a>
+                        </p>
+                    </div>
+                    <div class="glass-morphism p-6 rounded-2xl">
+                        <i class="fas fa-map-marker-alt text-3xl text-blue-400 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Localisation</h3>
+                        <p class="text-gray-300">${contact.location}</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
